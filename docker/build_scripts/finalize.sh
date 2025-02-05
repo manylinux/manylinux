@@ -86,6 +86,12 @@ for TOOL_PATH in "${MY_DIR}/requirements-tools/"*; do
 	case ${AUDITWHEEL_PLAT}-${TOOL} in
 		musllinux*_ppc64le-uv) continue;;  # uv doesn't provide musl ppc64le wheels due to Rust issues
 		musllinux*_s390x-uv) continue;;  # uv doesn't provide musl s390x wheels due to Rust issues
+		*_riscv64-uv) continue;;  # no uv for riscv64
+		musllinux*_riscv64-cmake|musllinux*_riscv64-swig) apk --no-cache add ${TOOL};;
+    musllinux*_riscv64-patchelf)
+			apk --no-cache add cmake
+			pipx install patchelf==0.17.2.1
+			;;
 		*) pipx install --pip-args="--require-hashes -r ${TOOL_PATH} --only-binary" "${TOOL}";;
 	esac
 done
